@@ -51,7 +51,7 @@ public class UserController {
         return "U re a good man";
     }
 
-    @GetMapping
+    @PostMapping(value = "/auth")
     private UserTokenDTO authorise(@RequestParam String login, @RequestParam String password) {
         User user = userRepository.findByLoginAndPassword(login, password);
         if(user != null && user.getEnabled()){
@@ -63,5 +63,21 @@ public class UserController {
     @GetMapping("/important")
     private String important(){
         return "Koly na pyvo?";
+    }
+
+    @GetMapping("/addAdmin")
+    private String addAdmin(){
+        try {
+            User user = new User();
+            user.setLogin("0@0.0");
+            user.setPassword("123456");
+            user.setEnabled(true);
+            user.setUserRole(UserRole.ADMIN_ROLE);
+            user.setUuid("0");
+            userRepository.save(user);
+        } catch (Exception e) {
+            return "admin exists, stop that";
+        }
+        return "Da, ya admin";
     }
 }

@@ -40,13 +40,14 @@ public class PlaceController {
     }
 
     @PostMapping("/rating")
-    private String updateRating(@RequestParam int rating, @RequestParam String uuid, @RequestParam long placeId) {
+    private String updateRating(@RequestParam float rating, @RequestParam String uuid, @RequestParam long placeId) {
         User user = userRepository.findByUuid(uuid);
         if (user != null && placeRepository.findById(placeId).isPresent()) {
             Place place = placeRepository.findById(placeId).get();
             long numberOfRatings = place.getNumberOfRatings();
             place.setAvgRating(((place.getAvgRating() * numberOfRatings) + rating) / (numberOfRatings + 1L));
             place.setNumberOfRatings(numberOfRatings + 1L);
+            placeRepository.save(place);
             return "Respect";
         }
             return "Could be anything ^_^";
